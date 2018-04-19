@@ -1,7 +1,7 @@
 
 # coding: utf-8
 
-# In[577]:
+# In[622]:
 
 
 import pandas as pd
@@ -14,7 +14,7 @@ from sklearn.model_selection import train_test_split
 from sklearn import metrics
 
 
-# In[578]:
+# In[623]:
 
 
 train = pd.read_csv('train.csv')
@@ -25,7 +25,7 @@ train.tail()
 # # Cleaning
 # ## The columns which are not numeric will be converted to numeric and the columns with too many NaNs will be removed (e.g., the Cabin)
 
-# In[579]:
+# In[624]:
 
 
 print("Total number of samples in train set is:", len(train))
@@ -36,7 +36,7 @@ print(train.isnull().sum())
 
 # ### From the above cell output, the cabin column has too many NaN values, so we will remove it. Also, we will replace the other NaN values in the Age and Embarked columns with their average values (or most frequent values in the case of discrete distribution)
 
-# In[580]:
+# In[625]:
 
 
 trData = train.drop('Cabin', 1)
@@ -50,32 +50,32 @@ testData = testData.drop('Name', 1)
 testData = testData.drop('Ticket', 1)
 
 
-# In[581]:
+# In[626]:
 
 
 testData.head()
 
 
-# In[582]:
+# In[627]:
 
 
 trData.head()
 
 
-# In[583]:
+# In[628]:
 
 
 testData[testData['Fare'].isnull()]
 
 
-# In[584]:
+# In[629]:
 
 
 testData['Fare'] = testData['Fare'].fillna(trData['Fare'].mean())
 testData.head()
 
 
-# In[585]:
+# In[630]:
 
 
 # Age has a lot of missing data (177 out of 891), we replace the missing ages with the average value
@@ -83,19 +83,19 @@ trData['Age']  = trData['Age'].fillna(trData['Age'].mean());
 testData['Age']  = testData['Age'].fillna(trData['Age'].mean());
 
 
-# In[586]:
+# In[631]:
 
 
 trData['Embarked'].value_counts()
 
 
-# In[587]:
+# In[632]:
 
 
 trData[trData['Embarked'].isnull()]
 
 
-# In[588]:
+# In[633]:
 
 
 # remove the two rows without Embarked Info
@@ -103,40 +103,40 @@ trData = trData.drop(trData.index[[61, 829]]);
 len(trData)
 
 
-# In[589]:
+# In[634]:
 
 
 # reset the index
 trData = trData.reset_index()
 
 
-# In[590]:
+# In[635]:
 
 
 trData.head()
 
 
-# In[591]:
+# In[636]:
 
 
 trData = trData.drop('index', 1);
 
 
-# In[592]:
+# In[637]:
 
 
 trData['Sex'] = trData['Sex'].replace(['female', 'male'],[0,1])
 testData['Sex'] = testData['Sex'].replace(['female', 'male'],[0,1])
 
 
-# In[593]:
+# In[638]:
 
 
 print(trData['Embarked'].unique())
 print(testData['Embarked'].unique())
 
 
-# In[594]:
+# In[639]:
 
 
 trData['Embarked'] = trData['Embarked'].replace(['S','C','Q'],[0,1,2])
@@ -145,7 +145,7 @@ trData.head()
 testData.head()
 
 
-# In[595]:
+# In[640]:
 
 
 trData['Nfamily'] = trData['Parch'] + trData['SibSp']
@@ -154,49 +154,49 @@ testData['Nfamily'] = testData['Parch'] + testData['SibSp']
 
 # # Statistical Analysis and feature engineering
 
-# In[596]:
+# In[641]:
 
 
 trData[['Nfamily', 'Survived']].groupby(['Nfamily'], as_index=False).mean().sort_values(by='Survived', ascending=False)
 
 
-# In[597]:
+# In[642]:
 
 
 trData[['Embarked', 'Survived']].groupby(['Embarked'], as_index=False).mean().sort_values(by='Survived', ascending=False)
 
 
-# In[598]:
+# In[643]:
 
 
 trData[['Sex','Survived']].groupby(['Sex'], as_index = False).mean()
 
 
-# In[599]:
+# In[644]:
 
 
 trData[['SibSp','Survived']].groupby(['SibSp'], as_index = False).mean()
 
 
-# In[600]:
+# In[645]:
 
 
 trData['SibSp'].value_counts()
 
 
-# In[601]:
+# In[646]:
 
 
 trData[['Pclass','Fare','Survived']].groupby(['Pclass'], as_index = False).mean()
 
 
-# In[602]:
+# In[647]:
 
 
 pd.crosstab(trData['Sex'], trData['Survived'])
 
 
-# In[603]:
+# In[648]:
 
 
 X = trData[['Pclass', 'Sex','Age', 'Fare', 'Nfamily', 'Embarked']]
@@ -205,13 +205,13 @@ X.head()
 testData.head()
 
 
-# In[604]:
+# In[649]:
 
 
 Xtrain, Xtest, ytrain, ytest = train_test_split(X, y, random_state=1)
 
 
-# In[617]:
+# In[650]:
 
 
 # Knearest neighbor
@@ -224,14 +224,14 @@ for n in range(1, 50):
 max(score)
 
 
-# In[606]:
+# In[651]:
 
 
 plt.plot(range(1,50), score,'.-')
 plt.show()
 
 
-# In[607]:
+# In[652]:
 
 
 # logistic regression
@@ -242,7 +242,7 @@ lgscore = (metrics.accuracy_score(ytest, ypredict))
 lgscore
 
 
-# In[608]:
+# In[653]:
 
 
 # Naive Baise
@@ -254,7 +254,7 @@ nbscore = (metrics.accuracy_score(ytest, ypredict))
 nbscore
 
 
-# In[609]:
+# In[654]:
 
 
 # SVM
@@ -267,7 +267,7 @@ svmscore
 
 # ## From the above comparisons Logistic Regression with an accuracy of 0.83 is the best predictor 
 
-# In[610]:
+# In[655]:
 
 
 score = []
@@ -276,39 +276,39 @@ logreg.fit(X, y)
 metrics.accuracy_score(ytest, arpredict)
 
 
-# In[611]:
+# In[656]:
 
 
 testDataTemp = testData[['Pclass','Sex','Age', 'Fare','Nfamily','Embarked']]
 arPredict = logreg.predict(testDataTemp)
 
 
-# In[612]:
+# In[657]:
 
 
 yPredict = pd.DataFrame({'PassengerId':testData['PassengerId'], 'Survived': arPredict})
 
 
-# In[613]:
+# In[658]:
 
 
 yPredict.head()
 
 
-# In[614]:
+# In[659]:
 
 
 yPredict.to_csv('../predictions.csv', index = False)
 yPredict.shape
 
 
-# In[615]:
+# In[660]:
 
 
 X.head()
 
 
-# In[616]:
+# In[661]:
 
 
 testDataTemp.head()
